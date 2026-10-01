@@ -1,0 +1,12 @@
+# Скрытые файлы и папки сред
+__pycache__/
+venv/
+env/
+.venv/
+
+# Файлы с секретами и ключами AWS
+.env
+secret.yaml
+
+# Системные файлы macOS
+.DS_Store
