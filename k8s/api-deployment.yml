@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamfetch-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: streamfetch
+  template:
+    metadata:
+      labels:
+        app: streamfetch
+    spec:
+      containers:
+        - name: api
+          image: streamfetch-api:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: REDIS_URL
+              value: "redis://redis-service:6379/0"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: AWS_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: AWS_BUCKET_NAME
+            - name: AWS_REGION_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: AWS_REGION_NAME
