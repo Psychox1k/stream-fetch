@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: streamfetch-redis
+    restart: always
+    volumes:
+      - redis_data:/data
+
+  api:
+    build: .
+    container_name: streamfetch-api
+    restart: always
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+  nginx:
+    image: nginx:alpine
+    container_name: streamfetch-nginx
+    restart: always
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+
+volumes:
+  redis_data:
