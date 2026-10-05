@@ -11,14 +11,13 @@ import redis.asyncio as redis
 from aiohttp import web
 
 load_dotenv()
-print(f"DEBUG: Access Key starts with: {str(os.getenv('AWS_ACCESS_KEY_ID'))[:4]}")
 AWS_BUCKET_NAME = os.getenv("AWS_BUCKET_NAME")
 AWS_REGION = os.getenv("AWS_REGION_NAME")
 
 
 
 async def init_redis(app: web.Application):
-    redis_url = "redis://localhost:6379/0"
+    redis_url = os.getenv("REDIS_URL", "redis://localhost:6379/0")
     app["redis"] = await redis.from_url(redis_url, decode_responses=True)
     print("Successful connecting to redis")
 
@@ -32,6 +31,7 @@ async def init_app():
     app.on_cleanup.append(close_redis)
 
     app.router.add_post("/api/v1/fetch", fetch_assets_handler)
+    app.router.add_get("/api/v1/status/{job_id}", status_handler)
 
     return app
 
