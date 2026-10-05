@@ -8,6 +8,7 @@ __pycache__/
 *$py.class
 #additional
 secret.yaml
+aws-secret.yaml
 # C extensions
 *.so
 
